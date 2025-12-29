@@ -20,8 +20,30 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'PT Kurnia Agro Lestari' }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ $title ?? 'PT Kurnia Agro Lestari' }} - Solusi Pertanian Terbaik</title>
+    <meta name="description" content="{{ $description ?? 'Mitra terbaik solusi pertanian Anda. Menyediakan pupuk berkualitas (NPK, Nitroganik), teknologi drone, dan konsultasi ahli untuk hasil panen maksimal.' }}">
+    <meta name="keywords" content="Pupuk Sawit, Kurnia Agro Lestari, NPK, Nitroganik, Pertanian Riau, Pupuk Pekanbaru, Konsultan Pertanian">
+    <meta name="author" content="PT Kurnia Agro Lestari">
+
+    <link rel="icon" type="image/png" href="{{ asset('images/logoKAL.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logoKAL.png') }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:title" content="{{ $title ?? 'PT Kurnia Agro Lestari' }}">
+    <meta property="og:description" content="{{ $description ?? 'Solusi cerdas pertanian masa depan. Tingkatkan hasil panen sawit Anda hingga 70% dengan teknologi pupuk kami.' }}">
+    <meta property="og:image" content="{{ asset('images/og-image.jpg') }}"> 
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request()->url() }}">
+    <meta property="twitter:title" content="{{ $title ?? 'PT Kurnia Agro Lestari' }}">
+    <meta property="twitter:description" content="{{ $description ?? 'Solusi cerdas pertanian masa depan. Tingkatkan hasil panen sawit Anda hingga 70%.' }}">
+    <meta property="twitter:image" content="{{ asset('images/og-image.jpg') }}">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
