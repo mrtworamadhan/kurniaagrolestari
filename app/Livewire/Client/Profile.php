@@ -5,6 +5,7 @@ namespace App\Livewire\Client;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Auth;
 
 #[Title('Profil Saya - Client Area')]
 #[Layout('components.layouts.client')]
@@ -14,21 +15,16 @@ class Profile extends Component
 
     public function mount()
     {
-        // Simulasi Auth User
-        $this->user = [
-            'name' => 'Budi Santoso',
-            'email' => 'budisantoso@gmail.com',
-            'phone' => '081234567890',
-            'location' => 'Rokan Hilir, Riau',
-            'avatar' => 'https://ui-avatars.com/api/?name=Budi+Santoso&background=22c55e&color=fff',
-            'joined' => 'Client sejak 2023'
-        ];
+        $this->user = Auth::user();
     }
 
     public function logout()
     {
-        // Nanti logic logout Laravel auth
-        // Auth::logout();
+        Auth::logout();
+        
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
         return redirect()->route('home');
     }
 

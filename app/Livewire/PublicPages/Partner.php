@@ -30,10 +30,8 @@ class Partner extends Component
     {
         $this->validate();
 
-        // Simulasi kirim data (Nanti disini logic simpan ke DB / Kirim Email)
-        sleep(1); // Ceritanya loading sebentar
+        sleep(1); 
 
-        // Reset form & kirim notifikasi sukses
         $this->reset();
         session()->flash('success', 'Terima kasih! Permintaan kemitraan Anda telah kami terima. Tim kami akan menghubungi Anda via WhatsApp.');
     }

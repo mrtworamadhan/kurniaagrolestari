@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,6 +23,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'customer_group', 
+        'phone',
+        'address',
+        'city',
+        'avatar',
+        'is_active',
     ];
 
     /**
@@ -57,5 +65,20 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return in_array($this->role, ['admin', 'sales', 'analyst']);
+    }
+
+    public function gardens()
+    {
+        return $this->hasMany(Garden::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

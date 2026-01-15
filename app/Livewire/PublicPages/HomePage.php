@@ -2,10 +2,12 @@
 
 namespace App\Livewire\PublicPages;
 
+use App\Models\Product;
+use App\Models\Testimonial;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
 #[Title('Beranda - PT Kurnia Agro Lestari')]
-
 class HomePage extends Component
 {
     public $products = [];
@@ -14,72 +16,45 @@ class HomePage extends Component
 
     public function mount()
     {
-        // Data Dummy Produk (Berdasarkan PDF)
-        $this->products = [
-            [
-                'id' => 1,
-                'name' => 'NITROGANIK',
-                'category' => 'Semi Organik',
-                'description' => 'Urea Majemuk New Formula. Mempercepat perbaikan tanah & pertumbuhan perakaran.',
-                'image' => 'images/products/product.png', // Nanti diganti real image
-                'tags' => ['Best Seller', 'Tanah Gambut'],
-            ],
-            [
-                'id' => 2,
-                'name' => 'NPK 6-12-22',
-                'category' => 'Chemical Fertilizer',
-                'description' => 'Pupuk non-subsidi untuk perkebunan dengan formulasi presisi untuk hasil maksimal.',
-                'image' => 'images/products/product.png',
-                'tags' => ['Sawit', 'Karet'],
-            ],
-            [
-                'id' => 3,
-                'name' => 'PHOSUL',
-                'category' => 'Pembenah Tanah',
-                'description' => 'Pupuk perbaikan tanah, pertumbuhan batang, serta menstabilkan pembuahan.',
-                'image' => 'images/products/product.png',
-                'tags' => ['Pembenah Tanah', 'Efektif'],
-            ],
-            [
-                'id' => 4,
-                'name' => 'CALCIUM GRANULAR',
-                'category' => 'Nutrisi Makro',
-                'description' => 'Menstabilkan pH tanah, perbanyakan nutrisi, dan pembesaran buah.',
-                'image' => 'images/products/product.png',
-                'tags' => ['pH Stabilizer', 'Buah Besar'],
-            ],
-        ];
+        $this->products = Product::where('is_active', true)
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'category' => $product->category->name ?? 'Umum', 
+                    'description' => $product->description,
+                    'image' => $product->image 
+                        ? asset('storage/' . $product->image) 
+                        : asset('images/products/product-placeholder.png'),
+                    'tags' => ['Unggulan', 'Terlaris'], 
+                ];
+            });
 
-        // Data Dummy Testimoni (Berdasarkan PDF Page 28-29)
-        $this->testimonials = [
-            [
-                'name' => 'Bpk. Ramli',
-                'role' => 'Petani Sawit',
-                'location' => 'Riau',
-                'content' => 'Alhamdulillah, dengan pemupukan 4x setahun, hasil panen normal 1 s.d 1.2 ton/Ha/sekali panen, dan TIDAK PERNAH TREK LAGI.',
-                'product' => 'Nitroganik & Magsul',
-            ],
-            [
-                'name' => 'Bpk. Togatorup',
-                'role' => 'Pemilik Kebun',
-                'location' => 'Rokan Hilir',
-                'content' => 'Perbandingan hasil panen di lahan gambut sangat nyata. Blok pupuk KAL menghasilkan 2.345 Kg dibanding pupuk umum yang hanya 1.500 Kg.',
-                'product' => 'Paket Lengkap PT KAL',
-            ],
-            [
-                'name' => 'Ibu Tien',
-                'role' => 'Pemilik Lahan',
-                'location' => 'Lahan Gambut Kering',
-                'content' => 'Hanya butuh waktu 7 bulan untuk memulihkan kebun dan mulai menghasilkan. Kalau pakai pupuk lain butuh 3-4 tahun.',
-                'product' => 'CRP Paus & Phosul',
-            ],
-        ];
+        $this->testimonials = Testimonial::where('is_active', true)
+            ->where('rating', '>=', 4) 
+            ->inRandomOrder() 
+            ->take(5)
+            ->get()
+            ->map(function ($testi) {
+                return [
+                    'name' => $testi->name,
+                    'role' => $testi->role ?? 'Mitra Petani',
+                    'location' => 'Indonesia', 
+                    'content' => $testi->content,
+                    'product' => 'Pupuk PT KAL', 
+                    'avatar' => $testi->avatar 
+                        ? asset('storage/' . $testi->avatar) 
+                        : null, 
+                ];
+            });
 
-        // Statistik
         $this->stats = [
-            ['label' => 'Jenis Produk', 'value' => '17+', 'desc' => 'Formula Teruji'],
-            ['label' => 'Pengalaman', 'value' => '25+', 'desc' => 'Tahun di Agrikultur'], // Berdasarkan Profile Muhammad Hasyari (1996-Now)
-            ['label' => 'Peningkatan Hasil', 'value' => '70%', 'desc' => 'Target Kenaikan Panen'], // Berdasarkan PDF Page 2
+            ['label' => 'Jenis Produk', 'value' => Product::where('is_active', true)->count() . '+', 'desc' => 'Formula Teruji'],
+            ['label' => 'Pengalaman', 'value' => '25+', 'desc' => 'Tahun di Agrikultur'],
+            ['label' => 'Peningkatan Hasil', 'value' => '70%', 'desc' => 'Target Kenaikan Panen'],
         ];
     }
 

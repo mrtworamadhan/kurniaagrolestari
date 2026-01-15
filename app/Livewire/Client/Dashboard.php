@@ -2,54 +2,81 @@
 
 namespace App\Livewire\Client;
 
+use App\Models\Garden;
+use App\Models\Order;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache; 
 
 #[Title('Dashboard - Client Area')]
-#[Layout('components.layouts.client')] // Pakai layout khusus PWA
+#[Layout('components.layouts.client')]
 class Dashboard extends Component
 {
-    public $user;
-    public $stats;
-    public $weather;
-    public $myGardens = [];
-
-    public function mount()
-    {
-        // Simulasi Auth User
-        $this->user = ['name' => 'Pak Budi'];
-
-        // Simulasi Statistik
-        $this->stats = [
-            'total_area' => 12, // Hektar
-            'next_schedule' => '2 Hari Lagi', // Jadwal pupuk
-        ];
-
-        // Simulasi Cuaca
-        $this->weather = [
-            'temp' => 32,
-            'desc' => 'Cerah Berawan',
-            'loc' => 'Rokan Hilir, Riau'
-        ];
-
-        // Simulasi List Kebun (Ringkasan)
-        $this->myGardens = [
-            [
-                'id' => 1,
-                'name' => 'Kebun Blok A (Gambut)',
-                'type' => 'Sawit',
-                'age' => '8 Tahun',
-                'area' => '4 Ha',
-                'status' => 'Sehat',
-                'image' => 'https://images.unsplash.com/photo-1625246333195-58f2164be23e?q=80&w=200&auto=format&fit=crop'
-            ],
-            // Bisa tambah lagi
-        ];
-    }
-
     public function render()
     {
-        return view('livewire.client.dashboard');
+        $user = auth()->user();
+
+        $gardens = Garden::where('user_id', $user->id)->latest()->get();
+        $totalArea = $gardens->sum('area_size');
+
+        $totalDebt = 0;
+        try {
+            $totalDebt = Order::where('user_id', $user->id)
+                ->where('payment_method', 'tempo')
+                ->whereIn('payment_status', ['unpaid', 'partial'])
+                ->get()
+                ->sum(fn($order) => $order->total_amount - ($order->paid_amount ?? 0));
+        } catch (\Exception $e) { $totalDebt = 0; }
+
+        if ($gardens->count() > 0) {
+            $rawLocation = $gardens->first()->location; 
+        } else {
+            $rawLocation = null;
+        }
+
+        $searchLocation = $rawLocation ?: 'Pekanbaru';
+
+        $cacheKey = 'weather_' . $user->id . '_' . Str::slug($searchLocation);
+
+        $weather = Cache::remember($cacheKey, 60 * 60, function () use ($searchLocation) {
+            
+            $apiKey = env('OPENWEATHER_API_KEY');
+            
+            $response = Http::get("https://api.openweathermap.org/data/2.5/weather", [
+                'q' => $searchLocation,
+                'appid' => $apiKey,
+                'units' => 'metric', 
+                'lang' => 'id'       
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                return [
+                    'temp' => round($data['main']['temp']),
+                    'desc' => ucfirst($data['weather'][0]['description']),
+                    'loc' => $data['name'],
+                    'icon' => $data['weather'][0]['icon']
+                ];
+            }
+
+            return [
+                'temp' => 30, 
+                'desc' => 'Cerah (Offline)',
+                'loc' => $searchLocation,
+                'icon' => '02d'
+            ];
+        });
+
+        return view('livewire.client.dashboard', [
+            'user' => $user,
+            'gardens' => $gardens,
+            'totalArea' => $totalArea,
+            'totalDebt' => $totalDebt,
+            'weather' => $weather,
+            'nextSchedule' => '2 Hari Lagi',
+        ]);
     }
 }

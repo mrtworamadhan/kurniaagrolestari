@@ -111,35 +111,47 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($products as $product)
-                <div class="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:border-primary-200 dark:hover:border-primary-500/50 transition-all duration-300 flex flex-col">
+                <div class="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-1 hover:border-primary-200 dark:hover:border-primary-500/50 transition-all duration-300 flex flex-col h-full">
                     
-                    <div class="aspect-[4/3] bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
-                        <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="aspect-[4/3] bg-gray-50 dark:bg-gray-700 relative overflow-hidden">
+                        <img src="{{ $product['image'] }}" 
+                            alt="{{ $product['name'] }}" 
+                            class="w-full h-full object-cover group-hover:scale-110 transition duration-700 ease-out">
+                        
                         <div class="absolute top-3 left-3">
-                            <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-white/90 dark:bg-gray-900/90 text-primary-700 dark:text-primary-300 shadow-sm backdrop-blur-sm">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide bg-white/95 dark:bg-gray-900/90 text-primary-600 dark:text-primary-400 shadow-md backdrop-blur-sm">
                                 {{ $product['category'] }}
                             </span>
                         </div>
                     </div>
 
                     <div class="p-5 flex flex-col flex-1">
-                        <div class="mb-3">
+                        
+                        <div class="mb-3 flex flex-wrap gap-1">
                             @foreach($product['tags'] as $tag)
-                                <span class="text-[10px] uppercase tracking-wider font-bold text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-900/30 px-2 py-0.5 rounded border border-secondary-100 dark:border-secondary-800 mr-1">
+                                <span class="text-[10px] uppercase font-bold text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-900/40 px-2 py-1 rounded-md border border-secondary-100 dark:border-secondary-800">
                                     {{ $tag }}
                                 </span>
                             @endforeach
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition">
+
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-1" title="{{ $product['name'] }}">
                             {{ $product['name'] }}
                         </h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4 flex-1">
-                            {{ Str::limit($product['description'], 80) }}
-                        </p>
+
+                        <div class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                            {{ Str::limit(strip_tags($product['description']), 150) }}
+                        </div>
                         
-                        <a href="{{ route('products.detail', $product['id']) }}" class="w-full text-center py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-primary-500 hover:text-white hover:border-primary-500 transition-colors">
-                            Detail Produk
-                        </a>
+                        <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+                            <a href="{{ route('products.detail', $product['id']) }}" class="group/btn relative w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:bg-primary-500 hover:text-white transition-all duration-300 overflow-hidden">
+                                <span>Lihat Detail</span>
+                                <svg class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
                 @endforeach
@@ -222,18 +234,21 @@
                             </blockquote>
                             
                             <div class="flex items-center gap-4 border-t border-white/10 dark:border-gray-700/50 pt-6">
-                                <div class="w-12 h-12 bg-secondary-500 rounded-full flex items-center justify-center text-lg font-bold shadow-inner">
-                                    {{ substr($testi['name'], 0, 1) }}
-                                </div>
+    
+                                @if(!empty($testi['avatar']))
+                                    <img src="{{ $testi['avatar'] }}" alt="{{ $testi['name'] }}" class="w-12 h-12 rounded-full object-cover shadow-inner border border-secondary-500">
+                                @else
+                                    <div class="w-12 h-12 bg-secondary-500 rounded-full flex items-center justify-center text-lg font-bold shadow-inner text-white">
+                                        {{ substr($testi['name'], 0, 1) }}
+                                    </div>
+                                @endif
+
                                 <div>
                                     <div class="font-bold text-lg">{{ $testi['name'] }}</div>
                                     <div class="text-sm text-primary-200 dark:text-gray-400 flex items-center gap-1">
                                         <span>{{ $testi['role'] }}</span>
                                         <span class="w-1 h-1 bg-primary-200 rounded-full"></span>
                                         <span>{{ $testi['location'] }}</span>
-                                    </div>
-                                    <div class="text-xs text-secondary-300 dark:text-secondary-400 mt-1">
-                                        Produk: {{ $testi['product'] }}
                                     </div>
                                 </div>
                             </div>
@@ -251,7 +266,7 @@
             Jangan biarkan tanah Anda rusak. Beralihlah ke pupuk teknologi baru yang lebih hemat, efektif, dan ramah lingkungan.
         </p>
         <div class="flex justify-center gap-4">
-            <a href="https://wa.me/6282171107777" target="_blank" class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center gap-2 shadow-lg shadow-green-600/30">
+            <a href="https://wa.me/6281264915088" target="_blank" class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center gap-2 shadow-lg shadow-green-600/30">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.506-.669-.516-.173-.009-.371-.009-.57-.009-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                 Chat WhatsApp
             </a>
