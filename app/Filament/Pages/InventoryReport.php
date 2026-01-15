@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Filament\Exports\InventoryExporter;
 use App\Filament\Exports\OrderExporter;
 use App\Models\Product;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\ExportAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
@@ -21,6 +22,7 @@ use BackedEnum;
 
 class InventoryReport extends Page implements HasTable
 {
+    use HasPageShield;
     use InteractsWithTable;
 
     protected string $view = 'filament.pages.inventory-report';

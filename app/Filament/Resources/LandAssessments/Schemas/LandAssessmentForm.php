@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LandAssessments\Schemas;
 
+use App\Notifications\AssessmentResultReady;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -36,7 +37,13 @@ class LandAssessmentForm
                             ->default('pending')
                             ->required()
                             ->columnSpanFull()
-                            ->selectablePlaceholder(false),
+                            ->selectablePlaceholder(false)
+                            ->live()
+                            ->afterStateUpdated(function ($record, $state) {
+                                if ($state === 'completed' && $record->garden->user) {
+                                    $record->garden->user->notify(new AssessmentResultReady($record));
+                                }
+                            }),
                     ])->columns(2),
                 
                 Section::make('Dokumentasi Lapangan')

@@ -3,12 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue; 
 
 class RevenueChart extends ChartWidget
 {
+    use HasWidgetShield;
     protected ?string $heading = 'Grafik Penjualan (30 Hari Terakhir)';
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';

@@ -59,7 +59,7 @@ class AnalyzeAssessment extends Page implements HasForms, HasInfolists
         $garden = $this->record->garden;
         
         $standard = SoilStandard::where('plant_type', $garden->plant_type)
-                    ->where('soil_type', $garden->soil_type)
+                    ->where('soil_type_id', $garden->soil_type_id)
                     ->first();
         
         $stdValues = $standard ? $standard->standard_values : [];

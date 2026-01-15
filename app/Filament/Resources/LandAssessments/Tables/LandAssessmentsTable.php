@@ -4,6 +4,7 @@ namespace App\Filament\Resources\LandAssessments\Tables;
 
 use App\Filament\Resources\LandAssessments\Pages\AnalyzeAssessment;
 use App\Models\LandAssessment;
+use App\Notifications\AssessmentResultReady;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -34,7 +35,12 @@ class LandAssessmentsTable
                             ])
                     ->selectablePlaceholder(false)
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                                if ($state === 'completed' && $record->garden->user) {
+                                    $record->garden->user->notify(new AssessmentResultReady($record));
+                                }
+                            }),
 
                 TextColumn::make('current_condition')
                     ->label('Kondisi')

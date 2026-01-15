@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Exports\FinancialReportExporter;
 use App\Models\Order;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Carbon\Carbon;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -27,6 +28,7 @@ use BackedEnum;
 
 class FinancialReport extends Page implements HasTable, HasForms, HasActions
 {
+    use HasPageShield;
     use InteractsWithActions;
     use InteractsWithTable;
     use InteractsWithForms;

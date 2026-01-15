@@ -3,12 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 
 class StatsOverview extends BaseWidget
 {
+    use HasWidgetShield;
     protected static ?int $sort = 1;
 
     protected ?string $pollingInterval = '15s';

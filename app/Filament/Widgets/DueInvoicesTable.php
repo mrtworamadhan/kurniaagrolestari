@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
@@ -12,6 +13,7 @@ use App\Models\Order;
 
 class DueInvoicesTable extends TableWidget
 {
+    use HasWidgetShield;
     protected static ?string $heading = '⚠️ Tagihan Jatuh Tempo (Segera Hubungi)';
     protected static ?int $sort = 3;
     protected int|string|array $columnSpan = 'full';

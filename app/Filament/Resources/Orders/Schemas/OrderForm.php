@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Models\Product;
 use App\Models\User;
+use App\Notifications\OrderStatusChanged;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -78,7 +79,13 @@ class OrderForm
                                         'cancelled' => 'Batal',
                                     ])
                                     ->default('pending')
-                                    ->required(),
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(function ($record, $state) {
+                                        if ($record && $record->user) {
+                                            $record->user->notify(new OrderStatusChanged($record));
+                                        }
+                                    }),
                                 
                                 Select::make('payment_method')
                                     ->options([

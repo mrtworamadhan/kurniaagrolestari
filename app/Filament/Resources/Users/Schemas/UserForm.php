@@ -39,17 +39,17 @@ class UserForm
                             ->required(fn (string $context): bool => $context === 'create') 
                             ->label(fn (string $context): string => $context === 'edit' ? 'Password Baru (Opsional)' : 'Password'),
 
-                        Select::make('role')
-                            ->label('Role Aplikasi')
-                            ->options([
-                                'admin' => 'Administrator',
-                                'analyst' => 'Analyst (Agronom)',
-                                'sales' => 'Sales / Marketing',
-                                'client' => 'Client / Petani',
-                            ])
-                            ->default('client')
-                            ->required()
-                            ->native(false),
+                        Select::make('roles')
+                            ->relationship('roles', 'name') 
+                            ->multiple() 
+                            ->preload()
+                            ->searchable(),
+
+                        TextInput::make('role')
+                            ->label('Role (Legacy)')
+                            ->disabled() 
+                            ->dehydrated(false) 
+                            ->visible(fn () => auth()->user()->hasRole('super_admin')),
                         
                         Select::make('customer_group')
                             ->label('Group Pelanggan')

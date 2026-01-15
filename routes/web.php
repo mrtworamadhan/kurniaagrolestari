@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Auth\Login;
+use App\Livewire\Client\AssessmentResult;
 use App\Livewire\Client\GardenAdd;
 use App\Livewire\Client\GardenDetail;
 use App\Livewire\Client\Notifications;
@@ -42,6 +43,7 @@ Route::prefix('client')->name('client.')->middleware('auth')->group(function () 
     Route::get('/kebun', ClientGarden::class)->name('garden');
     Route::get('/kebun/tambah', GardenAdd::class)->name('garden.add');
     Route::get('/kebun/{id}', GardenDetail::class)->name('garden.detail'); 
+    Route::get('/kebun/analisa/{id}', AssessmentResult::class)->name('assessment.result');
     Route::get('/rekam-medis', ClientRecord::class)->name('record');
     Route::get('/produk', ClientShop::class)->name('shop'); 
     Route::get('/produk/{id}', ClientProductDetail::class)->name('shop.detail');

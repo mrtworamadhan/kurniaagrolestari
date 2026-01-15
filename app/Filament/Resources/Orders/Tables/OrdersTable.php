@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Models\Order;
+use App\Notifications\OrderStatusChanged;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -45,7 +46,13 @@ class OrdersTable
                         ])
                     ->selectablePlaceholder(false)
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        // Kirim notifikasi ke User pemilik order
+                        if ($record && $record->user) {
+                            $record->user->notify(new OrderStatusChanged($record));
+                        }
+                    }),
 
                 TextColumn::make('payment_status')
                     ->label('Pembayaran')

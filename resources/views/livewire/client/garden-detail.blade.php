@@ -48,55 +48,67 @@
     </div>
 
     <div x-show="tab === 'kondisi'" x-transition.opacity>
+        
         @if($initialAssessment)
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+            <div class="mb-6 rounded-2xl p-5 border relative overflow-hidden
+                @if($initialAssessment->status == 'completed') bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800
+                @elseif($initialAssessment->status == 'in_progress') bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800
+                @else bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800 @endif">
                 
-                <div class="flex items-start gap-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-100 dark:border-yellow-800">
-                    <div class="text-yellow-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <div class="flex items-start gap-4 relative z-10">
+                    <div class="p-3 rounded-full bg-white dark:bg-gray-800 shadow-sm shrink-0">
+                        @if($initialAssessment->status == 'completed')
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        @elseif($initialAssessment->status == 'in_progress')
+                            <svg class="w-6 h-6 text-blue-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        @else
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        @endif
                     </div>
-                    <div>
-                        <h4 class="font-bold text-gray-900 dark:text-white text-sm mb-1">Diagnosa Masalah</h4>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{{ $initialAssessment->notes }}</p>
+                    
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-900 dark:text-white text-lg">
+                            @if($initialAssessment->status == 'completed')
+                                Analisa Selesai
+                            @elseif($initialAssessment->status == 'in_progress')
+                                Sedang Dianalisa
+                            @else
+                                Menunggu Review
+                            @endif
+                        </h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1 mb-3">
+                            @if($initialAssessment->status == 'completed')
+                                Tim agronomi kami telah menyelesaikan pemeriksaan data kebun Anda. Rekomendasi pemupukan sudah siap.
+                            @elseif($initialAssessment->status == 'in_progress')
+                                Data Anda sedang dipelajari oleh tim ahli kami untuk menentukan dosis yang tepat.
+                            @else
+                                Data kebun Anda telah diterima dan sedang dalam antrian pemeriksaan tim kami.
+                            @endif
+                        </p>
+
+                        @if($initialAssessment->status == 'completed')
+                            <a href="{{ route('client.assessment.result', $initialAssessment->id) }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-green-600/30 transition transform active:scale-95">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                Buka Hasil & Rekomendasi
+                            </a>
+                        @endif
                     </div>
                 </div>
+            </div>
+        @endif
 
+        @if($initialAssessment)
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
                 <div class="space-y-3">
                     <div class="flex justify-between border-b border-gray-100 dark:border-gray-700 pb-2">
+                        <span class="text-sm text-gray-500">Keluhan Awal</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white text-right w-1/2">{{ $initialAssessment->notes ?? '-' }}</span>
+                    </div>
+                     <div class="flex justify-between border-b border-gray-100 dark:border-gray-700 pb-2">
                         <span class="text-sm text-gray-500">Varietas Bibit</span>
                         <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $initialAssessment->plant_variety ?? '-' }}</span>
                     </div>
-                    <div class="flex justify-between border-b border-gray-100 dark:border-gray-700 pb-2">
-                        <span class="text-sm text-gray-500">Topografi</span>
-                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $initialAssessment->topography ?? '-' }}</span>
                     </div>
-                    <div class="flex justify-between border-b border-gray-100 dark:border-gray-700 pb-2">
-                        <span class="text-sm text-gray-500">Berat Janjang (BJR)</span>
-                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $initialAssessment->bunch_weight ?? '-' }} kg</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl text-center">
-                        <p class="text-[10px] text-gray-500">Panen Awal</p>
-                        <p class="font-bold text-gray-900 dark:text-white">{{ $initialAssessment->current_yield ?? '0' }} Ton</p>
-                    </div>
-                    <div class="bg-primary-50 dark:bg-primary-900/20 p-3 rounded-xl text-center border border-primary-100 dark:border-primary-800">
-                        <p class="text-[10px] text-primary-600 dark:text-primary-400">Target Panen</p>
-                        <p class="font-bold text-primary-700 dark:text-primary-400">{{ $initialAssessment->target_yield ?? '0' }} Ton</p>
-                    </div>
-                </div>
-
-                @if($initialAssessment->visual_evidence)
-                <div>
-                    <h4 class="font-bold text-sm text-gray-900 dark:text-white mb-3">Dokumentasi Awal</h4>
-                    <div class="flex gap-2 overflow-x-auto pb-2">
-                        @foreach($initialAssessment->visual_evidence as $photo)
-                            <div class="w-24 h-24 rounded-lg bg-gray-200 flex-shrink-0 bg-cover bg-center border border-gray-200" style="background-image: url('{{ asset('storage/' . $photo) }}');"></div>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
             </div>
         @else
             <div class="text-center py-10 bg-white dark:bg-gray-800 rounded-2xl">
