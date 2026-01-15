@@ -38,6 +38,7 @@ class UsersTable
                         'analis' => 'info',
                         'sales' => 'warning',
                         'client' => 'success',
+                        default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => ucfirst($state)),
 
