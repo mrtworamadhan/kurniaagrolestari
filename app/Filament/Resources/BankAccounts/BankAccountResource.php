@@ -47,6 +47,8 @@ class BankAccountResource extends Resource
                         FileUpload::make('logo')
                             ->label('Logo Bank')
                             ->image()
+                            ->disk('public')
+                            ->visibility('public')
                             ->directory('bank-logos')
                             ->columnSpanFull(),
 
@@ -64,7 +66,7 @@ class BankAccountResource extends Resource
 
                         TextInput::make('account_holder')
                             ->label('Atas Nama')
-                            ->placeholder('PT PUPUK MAJU JAYA')
+                            ->placeholder('PT KAL')
                             ->required()
                             ->columnSpanFull(),
                         
@@ -72,7 +74,7 @@ class BankAccountResource extends Resource
                             ->label('Aktif / Gunakan')
                             ->default(true),
                     ])
-                    ->columns(2),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -82,6 +84,7 @@ class BankAccountResource extends Resource
             ->recordTitleAttribute('name')
             ->columns([
                 ImageColumn::make('logo')
+                    ->disk('public')
                     ->height(40),
                 
                 TextColumn::make('bank_name')

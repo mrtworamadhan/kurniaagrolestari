@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankAccount;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -18,10 +19,13 @@ class InvoiceController extends Controller
             'phone' => '+62 812 6491 5088',
             'email' => 'sales@kurniaagrolestari.com',
         ];
+        
+        $banks = BankAccount::where('is_active', true)->get();
 
         $pdf = Pdf::loadView('pdf.invoice', [
             'order' => $order,
             'company' => $company,
+            'banks' => $banks,
         ]);
 
         $pdf->setPaper('a4', 'portrait');

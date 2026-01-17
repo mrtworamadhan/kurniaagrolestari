@@ -52,7 +52,7 @@ class ArticleCategoryResource extends Resource
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
                             ->readOnly(),
-                    ])
+                    ])->columnSpanFull()
             ]);
     }
 

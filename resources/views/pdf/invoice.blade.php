@@ -35,15 +35,26 @@
 <body>
 
     <div class="header clearfix">
-        <div style="float: left;">
+        <div style="float: left; width: 55%;">
+
+            <img src="{{ public_path('images/logoKAL.png') }}"
+                style="
+                    width: 80px;
+                    margin-bottom: 6px;
+                ">
+
             <div class="logo">{{ $company['name'] }}</div>
+
         </div>
-        <div class="company-info">
+
+
+        <div class="company-info" style="float: right; width: 45%;">
             {{ $company['address'] }}<br>
             {{ $company['phone'] }}<br>
             {{ $company['email'] }}
         </div>
     </div>
+
 
     <div class="details-box clearfix">
         <div class="client-info">
@@ -115,11 +126,11 @@
             </div>
             
             <div style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
-                <div class="totals-row clearfix">
+                <div class="totals-row clearfix" style="margin-bottom: 5px;">
                     <span style="float: left;">Sudah Dibayar</span>
                     <span style="float: right; color: green;">Rp {{ number_format($order->paid_amount, 0, ',', '.') }}</span>
                 </div>
-                <div class="totals-row clearfix " style="font-weight: bold; color: {{ ($order->total_amount - $order->paid_amount) > 0 ? '#c53030' : 'green' }}">
+                <div class="totals-row clearfix" style="font-weight: bold; color: {{ ($order->total_amount - $order->paid_amount) > 0 ? '#c53030' : 'green' }}">
                     <span style="float: left;">Sisa Tagihan</span>
                     <span style="float: right;">Rp {{ number_format($order->total_amount - $order->paid_amount, 0, ',', '.') }}</span>
                 </div>
@@ -127,13 +138,72 @@
         </div>
     </div>
 
-    <div style="margin-top: 30px;">
-        <strong>Info Pembayaran:</strong><br>
-        BCA: 123-456-7890 (a.n PT Pupuk Maju Jaya)<br>
-        Mandiri: 987-000-1111 (a.n PT Pupuk Maju Jaya)<br>
-        <br>
-        <i>* Harap sertakan No. Invoice saat melakukan pembayaran.</i>
+    <div style="margin-top: 20px; width: 100%;">
+        <p style="
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #374151;
+        ">
+            Pembayaran melalui transfer dapat dilakukan ke nomor rekening berikut:
+        </p>
+        @forelse($banks as $bank)
+            <div style="
+                    margin-bottom: 8px;
+                    padding: 8px;
+                    border: 1px solid #e5e7eb;
+                    background: #f9fafb;
+                    border-radius: 6px;
+                    width: 35%;
+                ">
+                <div style="display: flex; align-items: center; gap: 8px;">
+
+                    <div>
+                        @if($bank->logo)
+                            <img src="{{ public_path('storage/' . $bank->logo) }}" style="max-width: 24px; max-height: 22px;">
+                        @else
+                            <span style="font-size: 8px; font-weight: bold;">
+                                {{ strtoupper(substr($bank->bank_name, 0, 3)) }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <div style="flex: 1;">
+                        <div style="font-size: 8px; color: #6b7280; font-weight: bold;">
+                            {{ strtoupper($bank->bank_name) }}
+                        </div>
+
+                        <div style="
+                                font-size: 11px;
+                                font-weight: bold;
+                                letter-spacing: 1px;
+                                font-family: monospace;
+                                color: #111827;
+                            ">
+                            {{ $bank->account_number }}
+                        </div>
+
+                        <div style="font-size: 8px; color: #6b7280;">
+                            a.n {{ $bank->account_holder }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        @empty
+            <p style="font-size: 9px; color: #9ca3af; font-style: italic;">
+                Hubungi admin untuk data rekening.
+            </p>
+        @endforelse
+        <p style="
+            margin-top: 6px;
+            font-size: 9px;
+            color: #6b7280;
+        ">
+            Konfirmasi dengan menyertakan bukti pembayaran kepada admin setelah melakukan transfer.
+        </p>
     </div>
+
 
     <div class="footer">
         Dicetak otomatis oleh Sistem {{ now()->format('d M Y H:i') }}

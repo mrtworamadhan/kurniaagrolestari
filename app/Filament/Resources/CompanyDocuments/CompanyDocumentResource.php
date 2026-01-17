@@ -50,6 +50,8 @@ class CompanyDocumentResource extends Resource
 
                         FileUpload::make('file_path')
                             ->label('Upload File (PDF/Gambar)')
+                            ->disk('public')
+                            ->visibility('public')
                             ->directory('legal-docs')
                             ->acceptedFileTypes(['application/pdf', 'image/*'])
                             ->required()
@@ -59,7 +61,7 @@ class CompanyDocumentResource extends Resource
                             ->label('Keterangan')
                             ->rows(2)
                             ->columnSpanFull(),
-                    ])->columns(2),
+                    ])->columnSpanFull(),
             ]);
     }
 
